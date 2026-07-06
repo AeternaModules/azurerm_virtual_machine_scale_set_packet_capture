@@ -46,5 +46,55 @@ EOT
       include_instance_ids = optional(list(string))
     }))
   }))
+  validation {
+    condition = alltrue([
+      for k, v in var.virtual_machine_scale_set_packet_captures : (
+        length(v.name) > 0
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.virtual_machine_scale_set_packet_captures : (
+        v.maximum_capture_duration_in_seconds == null || (v.maximum_capture_duration_in_seconds >= 1 && v.maximum_capture_duration_in_seconds <= 18000)
+      )
+    ])
+    error_message = "must be between 1 and 18000"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.virtual_machine_scale_set_packet_captures : (
+        v.machine_scope == null || (v.machine_scope.exclude_instance_ids == null || (length(v.machine_scope.exclude_instance_ids) > 0))
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.virtual_machine_scale_set_packet_captures : (
+        v.machine_scope == null || (v.machine_scope.include_instance_ids == null || (length(v.machine_scope.include_instance_ids) > 0))
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  # --- Unconfirmed validation candidates, derived from azurerm_virtual_machine_scale_set_packet_capture's provider source ---
+  # Not auto-enabled: either a bespoke provider validator we can't safely translate,
+  # or a path that crosses a list-typed block (needs its own for_each wrapping).
+  # Review, translate into a real validation{} block above, and delete once confirmed.
+  # path: network_watcher_id
+  #   source:    [from networkwatchers.ValidateNetworkWatcherID] !ok
+  # path: network_watcher_id
+  #   source:    [from networkwatchers.ValidateNetworkWatcherID] err != nil
+  # path: virtual_machine_scale_set_id
+  #   source:    validation.Any(...) - no translation rule yet, add one
+  # path: storage_location.file_path
+  #   source:    [from networkValidate.FilePath] !regexp.MustCompile(`^(.)+.cap$`).MatchString(value)
+  # path: storage_location.storage_account_id
+  #   source:    [from commonids.ValidateStorageAccountID] !ok
+  # path: storage_location.storage_account_id
+  #   source:    [from commonids.ValidateStorageAccountID] err != nil
+  # path: filter.protocol
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
 }
 
