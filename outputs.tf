@@ -8,7 +8,7 @@ output "virtual_machine_scale_set_packet_captures_filter" {
 }
 output "virtual_machine_scale_set_packet_captures_machine_scope" {
   description = "Map of machine_scope values across all virtual_machine_scale_set_packet_captures, keyed the same as var.virtual_machine_scale_set_packet_captures"
-  value       = { for k, v in azurerm_virtual_machine_scale_set_packet_capture.virtual_machine_scale_set_packet_captures : k => v.machine_scope if v.machine_scope != null && length(v.machine_scope) > 0 }
+  value       = { for k, v in azurerm_virtual_machine_scale_set_packet_capture.virtual_machine_scale_set_packet_captures : k => one(v.machine_scope) if v.machine_scope != null && length(v.machine_scope) > 0 }
 }
 output "virtual_machine_scale_set_packet_captures_maximum_bytes_per_packet" {
   description = "Map of maximum_bytes_per_packet values across all virtual_machine_scale_set_packet_captures, keyed the same as var.virtual_machine_scale_set_packet_captures"
@@ -32,7 +32,7 @@ output "virtual_machine_scale_set_packet_captures_network_watcher_id" {
 }
 output "virtual_machine_scale_set_packet_captures_storage_location" {
   description = "Map of storage_location values across all virtual_machine_scale_set_packet_captures, keyed the same as var.virtual_machine_scale_set_packet_captures"
-  value       = { for k, v in azurerm_virtual_machine_scale_set_packet_capture.virtual_machine_scale_set_packet_captures : k => v.storage_location if v.storage_location != null && length(v.storage_location) > 0 }
+  value       = { for k, v in azurerm_virtual_machine_scale_set_packet_capture.virtual_machine_scale_set_packet_captures : k => one(v.storage_location) if v.storage_location != null && length(v.storage_location) > 0 }
 }
 output "virtual_machine_scale_set_packet_captures_virtual_machine_scale_set_id" {
   description = "Map of virtual_machine_scale_set_id values across all virtual_machine_scale_set_packet_captures, keyed the same as var.virtual_machine_scale_set_packet_captures"
